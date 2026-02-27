@@ -11,7 +11,9 @@ import {
     View,
 } from "react-native";
 import { supabase } from "../services/supabase";
-import { Festival } from "../type"; //
+import { Festival } from "../type";
+// WeatherWidget
+import WeatherWidget from "../components/weatherwidget";
 
 export default function FestivalsScreen() {
   const [festivals, setFestivals] = useState<Festival[]>([]);
@@ -22,7 +24,6 @@ export default function FestivalsScreen() {
   }, []);
 
   async function getFestivals() {
-    // ดึงข้อมูลจากตาราง festivals ใน Supabase
     const { data, error } = await supabase.from("festivals").select("*");
     if (data) {
       setFestivals(data);
@@ -38,7 +39,6 @@ export default function FestivalsScreen() {
         style={styles.imageBackground}
         imageStyle={{ borderRadius: 25 }}
       >
-        {/* Overlay สีเข้มเพื่อให้ข้อความอ่านง่าย */}
         <View style={styles.overlay}>
           <View style={styles.monthTag}>
             <Text style={styles.monthText}>{item.month}</Text>
@@ -57,7 +57,6 @@ export default function FestivalsScreen() {
 
   return (
     <View style={styles.fullScreen}>
-      {/* ปิด Header ของระบบ */}
       <Stack.Screen options={{ headerShown: false }} />
 
       <StatusBar
@@ -66,7 +65,6 @@ export default function FestivalsScreen() {
         translucent
       />
 
-      {/* ปุ่มย้อน */}
       <TouchableOpacity
         style={styles.floatingBackButton}
         onPress={() => router.back()}
@@ -78,10 +76,12 @@ export default function FestivalsScreen() {
         data={festivals}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
+        // WeatherWidget
         ListHeaderComponent={
           <View style={styles.headerPadding}>
             <Text style={styles.mainTitle}>งานประเพณี</Text>
             <Text style={styles.subTitle}>เทศกาลและกิจกรรมสำคัญในสงขลา</Text>
+            <WeatherWidget />
           </View>
         }
         contentContainerStyle={styles.listContent}
@@ -126,6 +126,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Kanit_400Regular",
     color: "#888",
+    marginBottom: 5,
   },
   listContent: {
     paddingHorizontal: 20,

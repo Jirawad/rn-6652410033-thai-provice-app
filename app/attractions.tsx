@@ -13,6 +13,7 @@ import {
   View,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
+import WeatherWidget from "../components/weatherwidget";
 import { supabase } from "../services/supabase";
 import { Attraction } from "../type";
 
@@ -89,17 +90,14 @@ export default function AttractionsScreen() {
 
   return (
     <View style={styles.fullScreen}>
-      {/* ปิด Header */}
       <Stack.Screen options={{ headerShown: false }} />
 
-      {/* ปรับ StatusBar */}
       <StatusBar
         barStyle="dark-content"
         backgroundColor="transparent"
         translucent
       />
 
-      {/* ปุ่มย้อนกลับ */}
       <TouchableOpacity
         style={styles.floatingBackButton}
         onPress={() => router.back()}
@@ -111,8 +109,12 @@ export default function AttractionsScreen() {
         data={attractions}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
+        // WeatherWidget
         ListHeaderComponent={
-          <Text style={styles.mainTitle}>สถานที่ท่องเที่ยว</Text>
+          <View>
+            <Text style={styles.mainTitle}>สถานที่ท่องเที่ยว</Text>
+            <WeatherWidget />
+          </View>
         }
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}

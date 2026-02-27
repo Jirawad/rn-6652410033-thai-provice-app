@@ -2,19 +2,21 @@ import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-    FlatList,
-    Image,
-    Linking,
-    Platform,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  FlatList,
+  Image,
+  Linking,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { supabase } from "../services/supabase";
 import { Temple } from "../type";
+// WeatherWidget
+import WeatherWidget from "../components/weatherwidget";
 
 export default function TemplesScreen() {
   const [temples, setTemples] = useState<Temple[]>([]);
@@ -25,7 +27,6 @@ export default function TemplesScreen() {
   }, []);
 
   async function getTemples() {
-    // ดึงข้อมูลจากตาราง temples ใน Supabase
     const { data, error } = await supabase.from("temples").select("*");
     if (data) {
       setTemples(data);
@@ -44,7 +45,6 @@ export default function TemplesScreen() {
 
   const renderItem = ({ item }: { item: Temple }) => (
     <View style={styles.card}>
-      {/* รูปภาพวัด */}
       <Image source={{ uri: item.image }} style={styles.image} />
 
       <View style={styles.infoContainer}>
@@ -53,7 +53,6 @@ export default function TemplesScreen() {
 
         <Text style={styles.sectionTitle}>พิกัดสถานที่ (กดเพื่อนำทาง)</Text>
 
-        {/* แผนที่พรีวิวภายใน Card */}
         <View style={styles.mapContainer}>
           <MapView
             style={styles.map}
@@ -94,7 +93,6 @@ export default function TemplesScreen() {
 
   return (
     <View style={styles.fullScreen}>
-      {/* ปิด Header */}
       <Stack.Screen options={{ headerShown: false }} />
 
       <StatusBar
@@ -103,7 +101,6 @@ export default function TemplesScreen() {
         translucent
       />
 
-      {/* ปุ่มย้อนกลับ */}
       <TouchableOpacity
         style={styles.floatingBackButton}
         onPress={() => router.back()}
@@ -115,8 +112,12 @@ export default function TemplesScreen() {
         data={temples}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
+        // WeatherWidget
         ListHeaderComponent={
-          <Text style={styles.mainTitle}>วัดและศาสนสถาน</Text>
+          <View>
+            <Text style={styles.mainTitle}>วัดและศาสนสถาน</Text>
+            <WeatherWidget />
+          </View>
         }
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
@@ -148,7 +149,7 @@ const styles = StyleSheet.create({
     fontFamily: "Kanit_700Bold",
     color: "#9b59b6",
     marginTop: 110,
-    marginBottom: 10,
+    marginBottom: 5,
   },
   listContent: {
     paddingHorizontal: 20,

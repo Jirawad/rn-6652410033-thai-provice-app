@@ -2,19 +2,21 @@ import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-    FlatList,
-    Image,
-    Linking,
-    Platform,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  FlatList,
+  Image,
+  Linking,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { supabase } from "../services/supabase";
-import { Restaurant } from "../type"; //
+import { Restaurant } from "../type";
+// WeatherWidget
+import WeatherWidget from "../components/weatherwidget";
 
 export default function RestaurantsScreen() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
@@ -25,7 +27,6 @@ export default function RestaurantsScreen() {
   }, []);
 
   async function getRestaurants() {
-    // ดึงข้อมูลจากตาราง restaurants
     const { data, error } = await supabase.from("restaurants").select("*");
     if (data) {
       setRestaurants(data);
@@ -48,14 +49,12 @@ export default function RestaurantsScreen() {
 
   const renderItem = ({ item }: { item: Restaurant }) => (
     <View style={styles.card}>
-      {/* รูปภาพร้านอาหาร */}
       <Image source={{ uri: item.image }} style={styles.image} />
 
       <View style={styles.infoContainer}>
         <Text style={styles.nameText}>🍴 {item.name}</Text>
         <Text style={styles.addressText}>{item.address}</Text>
 
-        {/* ส่วนแสดงเบอร์โทรศัพท์ */}
         {item.phone && (
           <TouchableOpacity
             style={styles.phoneContainer}
@@ -68,7 +67,6 @@ export default function RestaurantsScreen() {
 
         <Text style={styles.sectionTitle}>พิกัดร้านอาหาร</Text>
 
-        {/* แผนที่พรีวิวภายใน Card */}
         <View style={styles.mapContainer}>
           <MapView
             style={styles.map}
@@ -109,7 +107,6 @@ export default function RestaurantsScreen() {
 
   return (
     <View style={styles.fullScreen}>
-      {/* ปิด Header */}
       <Stack.Screen options={{ headerShown: false }} />
 
       <StatusBar
@@ -118,7 +115,6 @@ export default function RestaurantsScreen() {
         translucent
       />
 
-      {/* ปุ่มย้อนกลับขนาดเล็ก */}
       <TouchableOpacity
         style={styles.floatingBackButton}
         onPress={() => router.back()}
@@ -130,8 +126,12 @@ export default function RestaurantsScreen() {
         data={restaurants}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
+        // WeatherWidget
         ListHeaderComponent={
-          <Text style={styles.mainTitle}>ร้านอาหารยอดนิยม</Text>
+          <View>
+            <Text style={styles.mainTitle}>ร้านอาหารยอดนิยม</Text>
+            <WeatherWidget />
+          </View>
         }
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     fontFamily: "Kanit_700Bold",
     color: "#e74c3c",
     marginTop: 110,
-    marginBottom: 10,
+    marginBottom: 5,
   },
   listContent: {
     paddingHorizontal: 20,

@@ -2,19 +2,21 @@ import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-    FlatList,
-    Image,
-    Linking,
-    Platform,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  FlatList,
+  Image,
+  Linking,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { supabase } from "../services/supabase";
 import { Coffee } from "../type";
+// WeatherWidget
+import WeatherWidget from "../components/weatherwidget";
 
 export default function CafesScreen() {
   const [cafes, setCafes] = useState<Coffee[]>([]);
@@ -33,7 +35,6 @@ export default function CafesScreen() {
     }
   }
 
-  // ฟังก์ชันโทรออก
   const makeCall = (phoneNumber: string) => {
     Linking.openURL(`tel:${phoneNumber}`);
   };
@@ -54,7 +55,6 @@ export default function CafesScreen() {
         <Text style={styles.nameText}>☕ {item.name}</Text>
         <Text style={styles.addressText}>{item.address}</Text>
 
-        {/* ส่วนแสดงเบอร์โทรศัพท์ */}
         {item.phone && (
           <TouchableOpacity
             style={styles.phoneContainer}
@@ -125,8 +125,12 @@ export default function CafesScreen() {
         data={cafes}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
+        // WeatherWidget
         ListHeaderComponent={
-          <Text style={styles.mainTitle}>ร้านกาแฟแนะนำ</Text>
+          <View>
+            <Text style={styles.mainTitle}>ร้านกาแฟแนะนำ</Text>
+            <WeatherWidget />
+          </View>
         }
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
